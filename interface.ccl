@@ -1,0 +1,5 @@
+# Interface definition for thorn AddRefinement
+
+IMPLEMENTS: AddRefinement
+
+INHERITS: CarpetRegrid2 CosmoLapse

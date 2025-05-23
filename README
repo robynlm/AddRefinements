@@ -1,0 +1,115 @@
+Cactus Code Thorns CosmoThorn
+Author(s)    : Robyn L. Munoz
+Maintainer(s): Robyn L. Munoz
+Licence      : GNU General Public License
+--------------------------------------------------------------------------
+
+Purpose of AddRefinements
+=========================
+This thorn changes some of the CarpetRegrid2 parameters so that when it does 
+its regriding some mesh refinement levels are added.
+
+A level is added when the minimum proper time in the simulation box is bigger 
+than a user provided threshold value.
+
+addref_threshold_active[n] = 0 :: "false" by default
+                             1 :: "true" # careful when you restart simulations
+addref_threshold[n] = 0.0 :: threshold value for the minimum proper time
+these threshold values need to be ordered 
+addref_threshold[n] < addref_threshold[n+1]
+You can also change the center of the refinement levels with 
+addref_xorigin[n], addref_yorigin[n], addref_zorigin[n]
+
+btw I always assume min(proper time) < code time
+
+Copyright
+=========
+Copyright (C) 2025  Robyn L. Munoz
+
+This thorn is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This thorn is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this thorn.  If not, see <http://www.gnu.org/licenses/>.
+
+You may contact the author at : r.l.munoz@sussex.ac.uk
+
+How to implement this thorn into Einstein Toolkit:
+==================================================
+===== 1) Have a working version of Einstein Toolkit
+# Follow the instructions here
+# https://github.com/nds-org/jupyter-et/blob/master/tutorial-server/notebooks/CactusTutorial.ipynb
+# Don't forget to try to run HelloWorld
+
+#If you're doing this on an HPC
+>> cd pathtocactus
+>> ./simfactory/bin/sim setup-silent --machine=HPCname
+>> ./simfactory/bin/sim build --machine=HPCname --thornlist=thornlists/einsteintoolkit.th
+
+#The paths of the HPC config files are:
+# pathtocactus/simfactory/mdb/machines/HPCname.ini
+# pathtocactus/simfactory/mdb/optionlists/HPCname.cfg
+# pathtocactus/simfactory/mdb/runscripts/HPCname.run
+# pathtocactus/simfactory/mdb/submitscripts/HPCname.sub
+
+===== 2) Have CosmoLapse working in your version of the Einstein Toolkit
+The current version of AddRefinements uses the CosmoLapse thorn because the 
+proper time is used in the threshold criterion to add refinement levels.
+Should you wish to use a different criterion, you should modify AddRefinements.
+
+===== 3) Include AddRefinements in Einstein Toolkit
+# link
+>> cd path_to_Cactus/Cactus/arrangements/Carpet/
+>> ln -s path_to_thorn/AddRefinements .
+# add to Cactus/thornlists/einsteintoolkit.th, in Carpet section
+Carpet/AddRefinements
+
+===== 4) Modify CarpetRegrid2
+Go to Cactus/arrangements/Carpet/CarpetRegrid2/interface.ccl
+At the bottom, move
+CCTK_INT old_num_levels[10] TYPE=scalar "Old number of refinement levels"
+to the PRIVATE section to the PUBLIC section
+
+===== 5) Compile Einstein Toolkit
+# in Cactus directory
+>> ./simfactory/bin/sim build -j2 --thornlist=thornlists/einsteintoolkit.th
+# Or
+>> ./simfactory/bin/sim build --machine=HPCname --thornlist=thornlists/einsteintoolkit.th
+
+===== 6) Run test_AddRefinements.par to check if it works
+>> ./simfactory/bin/sim create-submit test_AddRefinements --parfile=arrangements/Carpet/AddRefinements/test_AddRefinements.par --procs=1 --num-threads=1
+# Or
+>> ./simfactory/bin/sim create-submit test_AddRefinements --machine=HPCname --parfile=arrangements/Carpet/AddRefinements/test_AddRefinements.par --procs=1 --num-threads=1
+
+===== 7) Check output
+with
+ >> grep '(AddRefinements)' ~/simulations/test_AddRefinements/output-0000/test_AddRefinements.out
+you should get:
+INFO (AddRefinements): num_levels[0] is 1, comparing 1.992043 to 2.000000
+INFO (AddRefinements): num_levels[0] is 1, comparing 2.009771 to 2.000000
+INFO (AddRefinements): Incrementing num_levels[0] to 2
+INFO (AddRefinements): num_levels[0] is 2, comparing 2.952911 to 3.000000
+INFO (AddRefinements): num_levels[0] is 2, comparing 2.952911 to 3.000000
+INFO (AddRefinements): num_levels[0] is 2, comparing 2.961699 to 3.000000
+INFO (AddRefinements): num_levels[0] is 2, comparing 2.961699 to 3.000000
+INFO (AddRefinements): num_levels[0] is 2, comparing 2.970487 to 3.000000
+INFO (AddRefinements): num_levels[0] is 2, comparing 2.970487 to 3.000000
+INFO (AddRefinements): num_levels[0] is 2, comparing 2.979274 to 3.000000
+INFO (AddRefinements): num_levels[0] is 2, comparing 2.979274 to 3.000000
+INFO (AddRefinements): num_levels[0] is 2, comparing 2.988061 to 3.000000
+INFO (AddRefinements): num_levels[0] is 2, comparing 2.988061 to 3.000000
+INFO (AddRefinements): num_levels[0] is 2, comparing 2.996848 to 3.000000
+INFO (AddRefinements): num_levels[0] is 2, comparing 2.996848 to 3.000000
+INFO (AddRefinements): num_levels[0] is 2, comparing 3.005635 to 3.000000
+INFO (AddRefinements): Incrementing num_levels[0] to 3
+
+===== 8) Be happy
+
+

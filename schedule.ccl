@@ -1,0 +1,13 @@
+# Schedule definitions for thorn AddRefinement
+
+SCHEDULE AddRefinement_Change_num_levels AT preregrid
+{
+  LANG: C
+  OPTIONS: global
+  READS: CosmoLapse::propertime
+  READS: CarpetRegrid2::old_num_levels(everywhere)
+  WRITES: CarpetRegrid2::num_levels(everywhere)
+  WRITES: CarpetRegrid2::position_x(everywhere)
+  WRITES: CarpetRegrid2::position_y(everywhere)
+  WRITES: CarpetRegrid2::position_z(everywhere)
+} "Change_num_levels"
