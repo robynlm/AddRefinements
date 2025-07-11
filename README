@@ -6,17 +6,16 @@ Licence      : GNU General Public License
 
 Purpose of AddRefinements
 =========================
-This thorn changes some of the CarpetRegrid2 parameters so that when it does 
-its regriding some mesh refinement levels are added.
+This thorn changes some of the CarpetRegrid2 parameters to trigger regriding 
+including more mesh refinement levels are added.
 
-A level is added when the minimum proper time in the simulation box is bigger 
-than a user provided threshold value.
+A level is added when the minimum proper time (computed from CosmoLapse) 
+in the simulation box is bigger than a user provided threshold value.
 
-addref_threshold_active[n] = 0 :: "false" by default
-                             1 :: "true" # careful when you restart simulations
-addref_threshold[n] = 0.0 :: threshold value for the minimum proper time
-these threshold values need to be ordered 
-addref_threshold[n] < addref_threshold[n+1]
+addref_threshold[n] = 0.0  # -1 is the default where the threshold is not used
+n indicates the (n+1) refinement level
+e.g. addref_threshold[0] is the threshold value determining when the 1st refinement level is added, addref_threshold[1] for the 2nd refinement level, and so on
+
 You can also change the center of the refinement levels with 
 addref_xorigin[n], addref_yorigin[n], addref_zorigin[n]
 

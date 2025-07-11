@@ -77,9 +77,6 @@ CarpetRegrid2::radius_1[2] = 301.5
 ActiveThorns = "AddRefinements"
 AddRefinements::verbose = yes
 AddRefinements::veryverbose = no
-AddRefinements::addref_threshold_active[0] = 1
-AddRefinements::addref_threshold_active[1] = 1
-AddRefinements::addref_threshold_active[2] = 1
 AddRefinements::addref_threshold[0] = 1.5
 AddRefinements::addref_threshold[1] = 2
 

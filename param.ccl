@@ -30,15 +30,9 @@ CCTK_STRING reduction_operation "Which reduction operation should be used to com
 private:
 CCTK_REAL addref_threshold[40] "When should the new refinement level be added" STEERABLE=always
 {
+  -1 :: "don't change things"
   0:* :: ""
-} 10
-
-private:
-CCTK_INT addref_threshold_active[40] "Should threshold n be checked" STEERABLE=always
-{
-  0 :: "false"
-  1 :: "true"
-} 0
+} -1
 
 private:
 CCTK_REAL addref_xorigin[40] "Where should the center be in x?" STEERABLE=always
